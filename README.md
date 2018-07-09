@@ -1,6 +1,7 @@
 # Getting-and-cleaning-data-project
-The script run_analysis.R is written for this project, this R file does the following:
-##
+The script run_analysis.R is written for this project. 
+## Description 
+This R file does the following:
 1.Merges the training and the test sets to create one data set.
 2.Extracts only the measurements on the mean and standard deviation for each measurement.
 3.Uses descriptive activity names to name the activities in the data set
