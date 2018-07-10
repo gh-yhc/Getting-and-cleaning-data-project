@@ -7,7 +7,7 @@ This code does the following (in order):
 * downloads the compressed data and decompress,
 * loads packages,
 * reads features,
-* fixes the problem of duplicated names,
+* fixes the problem of duplicated feature names,
 * processes train data and generate train dataset,
 * processes test data and generate test dataset,
 
