@@ -20,6 +20,26 @@ then does the assigned tasks:
 Finally writes the tidy dataset to a .txt file.
 
 ## Explanation of variables used in the analysis code 
+features: explanations of experimental variables
+fixedwidth: the width for reading fixed width format data
+N_obs_train: number of rows/observations for train dataset
+N_obs_test: number of rows/observations for test dataset
+N_col: number of columns (variables)
+N_col_isig: number of columns for inertial signals
+activity_labels: descriptive names for activities
+subject_train: subjects of train data
+subject_test: subjects of test data
+test: train dataset
+test: test dataset
+merged: the merged dataset containing train and test data. 
+datawithmean: the dataset on the mean for each measurement.
+datawithstd: the dataset on the standard deviation for each measurement.
+Ncomb: number of combinations by subjects and activities
+Nc: number of columns
+Ni: total number of subjects
+Nj: total number of activities
+activity_labels
+avgdata: the wanted tidy dataset.
 
 ## Feature Selection 
 =================
