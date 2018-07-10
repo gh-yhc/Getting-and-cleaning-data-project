@@ -34,11 +34,10 @@ Finally writes the tidy dataset to a .txt file.
 * merged: the merged dataset containing train and test data. 
 * datawithmean: the dataset on the mean for each measurement.
 * datawithstd: the dataset on the standard deviation for each measurement.
-* Ncomb: number of combinations by subjects and activities
-* Nc: number of columns
+* Ncomb: number of combinations by subjects and activities (for the nested for loop)
+* Nc: number of columns (for the nested for loop)
 * Ni: total number of subjects
 * Nj: total number of activities
-* activity_labels
 * avgdata: the wanted tidy dataset.
 
 ## Feature Selection 
