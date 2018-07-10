@@ -1,6 +1,6 @@
 # Getting-and-cleaning-data-project
 The script run_analysis.R is written for this project. 
-Codebook: some explanations are given in the comments of this R file.
+
 ## Description 
 This R file does the following:
 1. Merges the training and the test sets to create one data set.
