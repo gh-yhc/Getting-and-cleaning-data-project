@@ -2,23 +2,23 @@
 
 ## Explanation of run_analysis.R
 This code does the following (in order):
-* read "UCI HAR Dataset",
-* combine train and test datasets,
-* download the compressed data and decompress,
-* load packages,
-* read features,
-* fix the problem of duplicated names,
-* process train data and generate train dataset,
-* process test data and generate test dataset,
+* reads "UCI HAR Dataset",
+* combines train and test datasets,
+* downloads the compressed data and decompress,
+* loads packages,
+* reads features,
+* fixes the problem of duplicated names,
+* processes train data and generate train dataset,
+* processes test data and generate test dataset,
 
-then do the assigned tasks:
-1. Merge the training and the test sets to create one data set.
+then does the assigned tasks:
+1. Merges the training and the test sets to create one data set.
 2. Extracts only the measurements on the mean and standard deviation for each measurement.
 3. Uses descriptive activity names to name the activities in the data set
 4. Appropriately labels the data set with descriptive variable names.
 5. From the data set in step 4, creates a second, independent tidy data set 
 
-Finally write the tidy dataset to a .txt file.
+Finally writes the tidy dataset to a .txt file.
 
 ## Explanation of variables used in the analysis code 
 
