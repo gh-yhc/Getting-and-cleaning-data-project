@@ -20,8 +20,8 @@ then does the assigned tasks:
 Finally writes the tidy dataset to a .txt file.
 
 ## Explanation of variables used in the analysis code 
-features: explanations of experimental variables
-fixedwidth: the width for reading fixed width format data
+* features: explanations of experimental variables
+* fixedwidth: the width for reading fixed width format data
 N_obs_train: number of rows/observations for train dataset
 N_obs_test: number of rows/observations for test dataset
 N_col: number of columns (variables)
