@@ -3,13 +3,13 @@
 ## Explanation of run_analysis.R
 This code does the following (in order):
 * read "UCI HAR Dataset",
-*combine train and test datasets,
-download the compressed data and decompress,
-load packages,
-read features,
-fix the problem of duplicated names,
-process train data and generate train dataset,
-process test data and generate test dataset,
+* combine train and test datasets,
+* download the compressed data and decompress,
+* load packages,
+* read features,
+* fix the problem of duplicated names,
+* process train data and generate train dataset,
+* process test data and generate test dataset,
 
 then do the assigned tasks:
 
