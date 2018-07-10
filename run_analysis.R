@@ -1,20 +1,23 @@
 
+# Download the compressed data and decompress
 # if(!file.exists("./data")){dir.create("./data")}
 # fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
 # download.file(fileUrl,destfile="./data/acc.zip",method="curl")
 # unzip("./data/acc.zip",exdir = "./data")
 # file.remove("./data/acc.zip")
 
+# Load packages
 library(LaF)
 #library(tidyr)
 library(dplyr)
 #library(data.table)
 
+# Load features
 features<-read.csv("./data/UCI HAR Dataset/features.txt",header=F,sep = " ",colClasses = "character")
 features$V1<-NULL
 names(features)<-"sensordata"
 
-# fix the problem of duplicated names
+# fix the problem of duplicated feature names
 nv=features$sensordata # names of variables
 dup<-duplicated(nv)
 und<-unique(nv[dup]) # unique nv dup
@@ -26,9 +29,9 @@ for (ii in 1:length(und)) {
 }
 features$sensordata<-nv
 
-#############
-### train ###
-#############
+##########################
+### process train data ###
+##########################
 subject_train<-read.csv("./data/UCI HAR Dataset/train/subject_train.txt",
                 header=F,sep = "\n",col.names="subject") # 1~30
 #subject_train<-read.table("./data/UCI HAR Dataset/train/subject_train.txt",sep = "\n") # 1~30
@@ -49,11 +52,13 @@ dim(X_train)
 
 names(X_train)<-features$sensordata
 
+# Read activity labels
 activity_labels<-read.csv("./data/UCI HAR Dataset/activity_labels.txt",header=F,sep = " ",colClasses = "character")
 activity_labels$V1<-NULL
-names(activity_labels)<-"activity_labels"
-activity_labels
 activity_labels[,]<-tolower(activity_labels[,])
+activity_labels[,]<-sub("_"," ",activity_labels[,])
+names(activity_labels)<-"activity labels"
+activity_labels
 
 activity_train<-read.csv("./data/UCI HAR Dataset/train/y_train.txt",
                          header=F,sep = "\n",col.names="activity") # activity 1~6
@@ -63,8 +68,12 @@ for (ii in 1:dim(activity_labels)[1]){
   activity_train[,1][actlab]<-activity_labels[ii,]
   }
 
+# generate train dataset
 train<-cbind(subject_train,activity_train,X_train)
 
+#######################################
+# Process the data "Inertial Signals"
+#######################################
 filenames<-list.files("./data/UCI HAR Dataset/train/Inertial Signals")
 
 for (ii in 1:length(filenames)) {
@@ -84,9 +93,9 @@ for (ii in 1:length(filenames)) {
 train$train_or_test<-rep("train",N_obs_train)
 names(train)
 
-############
-### test ###
-############
+##########################
+### process test data ####
+##########################
 subject_test<-read.csv("./data/UCI HAR Dataset/test/subject_test.txt",
                         header=F,sep = "\n",col.names="subject") # 1~30
 #subject_test<-read.table("./data/UCI HAR Dataset/test/subject_test.txt",sep = "\n") # 1~30
@@ -110,8 +119,12 @@ for (ii in 1:dim(activity_labels)[1]){
   activity_test[,1][actlab]<-activity_labels[ii,]
 }
 
+# genarate test dataset
 test<-cbind(subject_test,activity_test,X_test)
 
+#######################################
+# Process the data "Inertial Signals"
+#######################################
 filenames<-list.files("./data/UCI HAR Dataset/test/Inertial Signals")
 
 for (ii in 1:length(filenames)) {
@@ -130,6 +143,7 @@ for (ii in 1:length(filenames)) {
 test$train_or_test<-rep("test",N_obs_test)
 names(test)
 
+#################################################################
 # 1.Merge the training and the test sets to create one data set.
 intersect(names(train),names(test))
 #options(warning.length = 8000)
@@ -141,9 +155,9 @@ dim(merged)
 #quantile(merged$`tBodyAcc-mean()-X_train`,probs = seq(0,1,length= 5),na.rm = T)
 #table(merged$subject)
 
-# merged is the wanted dataset. 
+### merged is the wanted dataset. 
 
-#2.Extracts only the measurements on the mean and standard deviation for each measurement.
+# 2.Extracts only the measurements on the mean and standard deviation for each measurement.
 #index<-grep("\\bmean()\\b",names(merged))
 index<-grep("mean()",names(merged),fixed = T)
 datawithmean<-merged[,index]
@@ -153,7 +167,7 @@ index<-grep("\\bstd()\\b",names(merged))
 datawithstd<-merged[,index]
 names(datawithstd)
 
-# datawithmean and datawithmean are the wanted measurements.
+# datawithmean and datawithstd are the wanted measurements.
 
 # 3.Uses descriptive activity names to name the activities in the data set
 merged$activity<-sub("_"," ",merged$activity)
@@ -161,6 +175,7 @@ merged$activity<-sub("_"," ",merged$activity)
 # merged$activity is the wanted names.
 
 # 4.Appropriately labels the data set with descriptive variable names.
+
 features_info<-readLines("./data/UCI HAR Dataset/features_info.txt")
 features_info[33:49]
 index<-grep("():",features_info,fixed = T)
@@ -244,28 +259,42 @@ names(merged)<-gsub("  "," ",names(merged),fixed = T)
 
 # 5.From the data set in step 4, creates a second, independent tidy data set 
 #   with the average of each variable for each activity and each subject.
-Ncomb<-(max(merged$subject)*dim(activity_labels)[1])
-Nc<-dim(merged)[2]-1
+Ncomb<-(max(merged$subject)*dim(activity_labels)[1]) # number of combinations by subjects and activities
+Nc<-dim(merged)[2]-1 # number of columns
+
+# prepare an empty dataset to fill later
 avgdata<-merged[1:Ncomb,1:Nc]
 avgdata[,]<-NA
 
-Ni<-max(merged$subject)
-Nj<-(dim(activity_labels)[1])
+# Nested for loops to filter and fill the prepared dataset
+Ni<-max(merged$subject) # total number of subjects
+Nj<-(dim(activity_labels)[1]) # total number of activities
+activity_labels<-as.data.frame(sub("_"," ",activity_labels[,1]))
 for (ii in 1:Ni){
   for (jj in 1:Nj){
     kk<-(ii-1)*Nj+jj
     avgdata$subject[kk]<-ii
     avgdata$activity[kk]<-activity_labels[jj,]
     
+    # filter the merged dataset
     filtered_data<-filter(merged,merged$subject==ii & merged$activity==activity_labels[jj,])
+    
+    # take mean for each case and each variable
     avgdata[kk,3:Nc]<-as.numeric(colMeans(filtered_data[,3:Nc]))
   }
 }
 
+# add "avg" to variable names to indicate
 names(avgdata)[3:Nc]<-paste("avg",names(avgdata)[3:Nc])
 
 # avgdata is the wanted tidy dataset.
+
+# write the tidy dataset to a .txt file
 write.table(avgdata,"./data/avgdata.txt",row.names = F)
 
 #source("./run_analysis.R")
-#system.time(source("./run_analysis.R"))
+
+
+
+
+
